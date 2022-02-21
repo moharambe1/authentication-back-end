@@ -1,17 +1,28 @@
-import Fastify from "fastify";
+import Fastify, { FastifyServerOptions } from "fastify";
+import BuildSession from "./plugins/session";
+
+import Login from "./routes/login";
+import register from "./routes/register";
 
 
 
-const build = (opts: FastifyOptions) => {
 
-  const app = Fastify(opts);
+const build = (opts: FastifyServerOptions) => {
 
-  app.get("/", (req, reply) => {
+  const fastify = Fastify(opts);  
+  BuildSession(fastify);
+
+
+  fastify.get("/", (req, reply) => { 
     reply.send({ start: "hello world" });
   });
+  
+  fastify.register(Login,{prefix: "login"});
 
+  fastify.register(register,{prefix: "register"});
+  
 
-  return app;
+  return fastify;
 }
 
 
